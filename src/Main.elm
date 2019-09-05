@@ -8,10 +8,10 @@ import Html.Events exposing (onClick)
 
 
 ---- MODEL ----
-
+type alias Uid = String
 
 type alias Model =
-    List String
+    List Uid
 
 
 init : ( Model, Cmd Msg )
@@ -27,7 +27,7 @@ type Msg
     = AddUuid
 
 
-newUuid : Model -> String
+newUuid : Model -> Uid
 newUuid model =
     "uuid" ++ String.fromInt (List.length model + 1)
 
