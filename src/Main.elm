@@ -1,7 +1,7 @@
-module Main exposing (Model, Msg(..), init, main, update, view)
+module Main exposing (Model, Msg(..), main, update, view)
 
 import Browser
-import Html exposing (Html, button, div, h1, img, text)
+import Html exposing (Html, button, div, h1, img, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
 
@@ -24,34 +24,38 @@ init =
 
 
 type Msg
-    = NoOp
+    = AddUuid
+
+
+newUuid : Model -> String
+newUuid model =
+    "uuid" ++ String.fromInt (List.length model + 1)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model ++ [ "1" ], Cmd.none )
+        AddUuid ->
+            ( newUuid model :: model, Cmd.none )
 
 
 
 ---- VIEW ----
 
 
-showModel : Model -> List (Html Msg)
+showModel : Model -> Html Msg
 showModel model =
-    List.map (\v -> h1 [] [ text v ]) model
+    p [] [ div [] (List.map (\v -> p [] [ text v ]) model) ]
 
 
 view : Model -> Html Msg
 view model =
     div []
-        ([ img [ src "/logo.svg" ] []
-         , h1 [] [ text "Your Elm App is working! Yes." ]
-         , button [ onClick NoOp ] [ text "add uuid" ]
-         ]
-            ++ showModel model
-        )
+        [ img [ src "/logo.svg" ] []
+        , h1 [] [ text "Your Elm App is working! Yes." ]
+        , button [ onClick AddUuid ] [ text "add uuid" ]
+        , showModel model
+        ]
 
 
 
