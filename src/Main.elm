@@ -5,7 +5,7 @@ import Html exposing (Html, button, div, h1, img, li, ol, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
 import Random exposing (Seed, initialSeed, step)
-import Uuid
+import Uuid exposing (Uuid)
 
 
 
@@ -19,7 +19,7 @@ type alias Uid =
 type alias Model =
     { list : List Uid
     , currentSeed : Seed
-    , currentUuid : Maybe Uuid.Uuid
+    , currentUuid : Maybe Uuid
     }
 
 
@@ -57,11 +57,11 @@ update msg model =
     case msg of
         AddUuid ->
             let
-                ( newUui, newSeed ) =
+                ( newId, newSeed ) =
                     step Uuid.uuidGenerator model.currentSeed
             in
             ( { model
-                | currentUuid = Just newUui
+                | currentUuid = Just newId
                 , currentSeed = newSeed
                 , list = newUuid model :: model.list
               }
