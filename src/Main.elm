@@ -23,10 +23,20 @@ type alias Model =
     }
 
 
-init : ( Model, Cmd Msg )
-init =
+
+-- init : ( Model, Cmd Msg )
+-- init =
+--     ( { list = []
+--       , id = ( Nothing, Random.initialSeed 0 )
+--       }
+--     , Cmd.none
+--     )
+
+
+init : Int -> ( Model, Cmd Msg )
+init seed =
     ( { list = []
-      , id = ( Nothing, Random.initialSeed 0 )
+      , id = ( Nothing, Random.initialSeed seed )
       }
     , Cmd.none
     )
@@ -89,13 +99,16 @@ view model =
 
 
 ---- PROGRAM ----
+-- main : Program () Model Msg
 
 
-main : Program () Model Msg
+main : Program Int Model Msg
 main =
     Browser.element
         { view = view
-        , init = \_ -> init
+
+        -- , init = \_ -> init
+        , init = init
         , update = update
 
         -- , subscriptions = subscriptions
