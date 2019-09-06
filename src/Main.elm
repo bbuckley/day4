@@ -4,7 +4,7 @@ import Browser
 import Html exposing (Html, button, div, h1, img, li, ol, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
-import Random exposing (Seed, initialSeed, step)
+import Random exposing (Seed)
 import Uuid exposing (Uuid)
 
 
@@ -18,16 +18,14 @@ type alias Uid =
 
 type alias Model =
     { list : List Uid
-    , currentSeed : Seed
-    , currentUuid : Maybe Uuid
+    , id : ( Maybe Uuid, Seed )
     }
 
 
 init : ( Model, Cmd Msg )
 init =
     ( { list = []
-      , currentSeed = initialSeed 0
-      , currentUuid = Nothing
+      , id = ( Nothing, Random.initialSeed 0 )
       }
     , Cmd.none
     )
@@ -41,29 +39,20 @@ type Msg
     = AddUuid
 
 
-newUuid : Model -> Uid
-newUuid model =
-    -- "!uuid" ++ String.fromInt (List.length model.list + 1)
-    case model.currentUuid of
-        Nothing ->
-            "first"
-
-        Just id ->
-            Uuid.toString id
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AddUuid ->
             let
+                ( _, oldSeed ) =
+                    model.id
+
                 ( newId, newSeed ) =
-                    step Uuid.uuidGenerator model.currentSeed
+                    Random.step Uuid.uuidGenerator oldSeed
             in
             ( { model
-                | currentUuid = Just newId
-                , currentSeed = newSeed
-                , list = newUuid model :: model.list
+                | id = ( Just newId, newSeed )
+                , list = Uuid.toString newId :: model.list
               }
             , Cmd.none
             )
