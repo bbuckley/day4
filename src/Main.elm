@@ -5,6 +5,7 @@ import Html exposing (Html, button, div, h1, img, li, ol, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
 import Random exposing (Seed)
+import Time
 import Uuid exposing (Uuid)
 
 
@@ -37,12 +38,28 @@ init =
 
 type Msg
     = AddUuid
+    | Tick Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AddUuid ->
+            let
+                ( _, oldSeed ) =
+                    model.id
+
+                ( newId, newSeed ) =
+                    Random.step Uuid.uuidGenerator oldSeed
+            in
+            ( { model
+                | id = ( Just newId, newSeed )
+                , list = Uuid.toString newId :: model.list
+              }
+            , Cmd.none
+            )
+
+        Tick _ ->
             let
                 ( _, oldSeed ) =
                     model.id
@@ -87,5 +104,14 @@ main =
         { view = view
         , init = \_ -> init
         , update = update
+
+        -- , subscriptions = subscriptions
         , subscriptions = always Sub.none
         }
+
+
+
+-- this works, FYI
+-- subscriptions : Model -> Sub Msg
+-- subscriptions _ =
+--     Time.every 5000 Tick
