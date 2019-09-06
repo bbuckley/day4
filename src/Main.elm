@@ -1,22 +1,36 @@
 module Main exposing (Model, Msg(..), main, update, view)
 
 import Browser
-import Html exposing (Html, button, div, h1, img, p, text)
+import Html exposing (Html, button, div, h1, img, li, ol, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
+import Random exposing (Seed, initialSeed, step)
+import Uuid
 
 
 
 ---- MODEL ----
-type alias Uid = String
+
+
+type alias Uid =
+    String
+
 
 type alias Model =
-    List Uid
+    { list : List Uid
+    , currentSeed : Seed
+    , currentUuid : Maybe Uuid.Uuid
+    }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( [], Cmd.none )
+    ( { list = []
+      , currentSeed = initialSeed 0
+      , currentUuid = Nothing
+      }
+    , Cmd.none
+    )
 
 
 
@@ -29,14 +43,30 @@ type Msg
 
 newUuid : Model -> Uid
 newUuid model =
-    "uuid" ++ String.fromInt (List.length model + 1)
+    -- "!uuid" ++ String.fromInt (List.length model.list + 1)
+    case model.currentUuid of
+        Nothing ->
+            "first"
+
+        Just id ->
+            Uuid.toString id
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AddUuid ->
-            ( newUuid model :: model, Cmd.none )
+            let
+                ( newUui, newSeed ) =
+                    step Uuid.uuidGenerator model.currentSeed
+            in
+            ( { model
+                | currentUuid = Just newUui
+                , currentSeed = newSeed
+                , list = newUuid model :: model.list
+              }
+            , Cmd.none
+            )
 
 
 
@@ -45,7 +75,7 @@ update msg model =
 
 showModel : Model -> Html Msg
 showModel model =
-    p [] [ div [] (List.map (\v -> p [] [ text v ]) model) ]
+    p [] [ ol [] (List.map (\v -> li [] [ text v ]) model.list) ]
 
 
 view : Model -> Html Msg
