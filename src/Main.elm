@@ -23,16 +23,6 @@ type alias Model =
     }
 
 
-
--- init : ( Model, Cmd Msg )
--- init =
---     ( { list = []
---       , id = ( Nothing, Random.initialSeed 0 )
---       }
---     , Cmd.none
---     )
-
-
 init : Int -> ( Model, Cmd Msg )
 init seed =
     ( { list = []
