@@ -13,12 +13,8 @@ import Uuid exposing (Uuid)
 ---- MODEL ----
 
 
-type alias Uid =
-    String
-
-
 type alias Model =
-    { list : List Uid
+    { list : List String
     , id : ( Maybe Uuid, Seed )
     }
 
