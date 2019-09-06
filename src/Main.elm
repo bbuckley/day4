@@ -45,34 +45,27 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AddUuid ->
-            let
-                ( _, oldSeed ) =
-                    model.id
-
-                ( newId, newSeed ) =
-                    Random.step Uuid.uuidGenerator oldSeed
-            in
-            ( { model
-                | id = ( Just newId, newSeed )
-                , list = Uuid.toString newId :: model.list
-              }
-            , Cmd.none
-            )
+            addId model
 
         Tick _ ->
-            let
-                ( _, oldSeed ) =
-                    model.id
+            addId model
 
-                ( newId, newSeed ) =
-                    Random.step Uuid.uuidGenerator oldSeed
-            in
-            ( { model
-                | id = ( Just newId, newSeed )
-                , list = Uuid.toString newId :: model.list
-              }
-            , Cmd.none
-            )
+
+addId : Model -> ( Model, Cmd Msg )
+addId model =
+    let
+        ( _, oldSeed ) =
+            model.id
+
+        ( newId, newSeed ) =
+            Random.step Uuid.uuidGenerator oldSeed
+    in
+    ( { model
+        | id = ( Just newId, newSeed )
+        , list = Uuid.toString newId :: model.list
+      }
+    , Cmd.none
+    )
 
 
 
