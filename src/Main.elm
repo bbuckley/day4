@@ -35,11 +35,15 @@ init seed =
 type Msg
     = AddUuid
     | Tick Time.Posix
+    | Clear
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Clear ->
+            ( { model | list = [] }, Cmd.none )
+
         AddUuid ->
             addId model
 
@@ -79,6 +83,7 @@ view model =
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Yes." ]
         , button [ onClick AddUuid ] [ text "add uuid" ]
+        , button [ onClick Clear ] [ text "clear" ]
         , showModel model
         ]
 
