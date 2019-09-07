@@ -1,7 +1,7 @@
 module Main exposing (Model, Msg(..), main, update, view)
 
 import Browser
-import Html exposing (Html, button, div, h1, img, li, ol, p, text)
+import Html exposing (Html, button, div, h1, img, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
 import Random exposing (Seed)
@@ -78,7 +78,7 @@ addId model =
 
 showModel : Model -> Html Msg
 showModel model =
-    p [] [ ol [] (List.map (\v -> li [] [ text v ]) model.list) ]
+    p [] [ div [] (List.map (\v -> div [] [ text v ]) model.list) ]
 
 
 view : Model -> Html Msg
