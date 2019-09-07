@@ -48,7 +48,11 @@ update msg model =
             addId model
 
         Tick _ ->
-            addId model
+            if List.length model.list < 3 then
+                addId model
+
+            else
+                (model, Cmd.none)
 
 
 addId : Model -> ( Model, Cmd Msg )
@@ -101,14 +105,12 @@ main =
         -- , init = \_ -> init
         , init = init
         , update = update
+        , subscriptions = subscriptions
 
-        -- , subscriptions = subscriptions
-        , subscriptions = always Sub.none
+        --, subscriptions = always Sub.none
         }
 
 
-
--- this works, FYI
--- subscriptions : Model -> Sub Msg
--- subscriptions _ =
---     Time.every 5000 Tick
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Time.every 5000 Tick
