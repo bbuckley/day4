@@ -52,7 +52,7 @@ update msg model =
                 addId model
 
             else
-                (model, Cmd.none)
+                ( model, Cmd.none )
 
 
 addId : Model -> ( Model, Cmd Msg )
