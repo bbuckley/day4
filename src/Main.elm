@@ -77,7 +77,17 @@ addId model =
 
 addIds : Int -> Model -> Model
 addIds n model =
-    List.foldl (\_ m -> addId m) model (List.range 1 n)
+    -- List.foldl (\_ m -> addId m) model (List.range 1 n)
+    repeat n addId model
+
+
+repeat : Int -> (a -> a) -> a -> a
+repeat n f m =
+    if n <= 1 then
+        f m
+
+    else
+        repeat (n - 1) f (f m)
 
 
 
