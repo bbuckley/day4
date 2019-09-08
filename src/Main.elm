@@ -11,12 +11,11 @@ import Uuid exposing (Uuid)
 
 
 ---- MODEL ----
--- comment to fetch
 
 
 type alias Model =
-    { list : List String
-    , id : ( Maybe Uuid, Seed )
+    { id : ( Maybe Uuid, Seed )
+    , list : List String
     }
 
 
@@ -82,6 +81,7 @@ addId model tag =
 addIds : Int -> Model -> Model
 addIds n model =
     List.foldl (\_ m -> addId m "") model (List.range 1 n)
+
 
 
 
