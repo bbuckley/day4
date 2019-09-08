@@ -36,6 +36,7 @@ type Msg
     = AddUuid
     | Tick Time.Posix
     | Clear
+    | AddUuids Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -45,17 +46,20 @@ update msg model =
             ( { model | list = [] }, Cmd.none )
 
         AddUuid ->
-            addId model
+            ( addId model, Cmd.none )
+
+        AddUuids n ->
+            ( addIds n model, Cmd.none )
 
         Tick _ ->
             if List.length model.list < 3 then
-                addId model
+                ( addId model, Cmd.none )
 
             else
                 ( model, Cmd.none )
 
 
-addId : Model -> ( Model, Cmd Msg )
+addId : Model -> Model
 addId model =
     let
         ( _, oldSeed ) =
@@ -64,12 +68,15 @@ addId model =
         ( newId, newSeed ) =
             Random.step Uuid.uuidGenerator oldSeed
     in
-    ( { model
+    { model
         | id = ( Just newId, newSeed )
         , list = Uuid.toString newId :: model.list
-      }
-    , Cmd.none
-    )
+    }
+
+
+addIds : Int -> Model -> Model
+addIds n model =
+    List.foldl (\_ m -> addId m) model (List.range 1 n)
 
 
 
@@ -83,11 +90,16 @@ showModel model =
 
 view : Model -> Html Msg
 view model =
+    let
+        n =
+            3
+    in
     div []
         [ img [ src "/logo.svg" ] []
         , h1 [] [ text "Your Elm App is working! Yes." ]
         , button [ onClick AddUuid ] [ text "add uuid" ]
         , button [ onClick Clear ] [ text "clear" ]
+        , button [ onClick (AddUuids n) ] [ text ("add " ++ String.fromInt n ++ " uuid") ]
         , showModel model
         ]
 
