@@ -11,6 +11,7 @@ import Uuid exposing (Uuid)
 
 
 ---- MODEL ----
+-- comment to fetch
 
 
 type alias Model =
