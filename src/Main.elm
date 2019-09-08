@@ -38,6 +38,7 @@ type Msg
     | Tick Time.Posix
     | Clear
     | AddUuids Int
+    | TickSlow Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -47,21 +48,24 @@ update msg model =
             ( { model | list = [] }, Cmd.none )
 
         AddUuid ->
-            ( addId model, Cmd.none )
+            ( addId model "", Cmd.none )
 
         AddUuids n ->
             ( addIds n model, Cmd.none )
 
         Tick _ ->
             if List.length model.list < 3 then
-                ( addId model, Cmd.none )
+                ( addId model "", Cmd.none )
 
             else
                 ( model, Cmd.none )
 
+        TickSlow _ ->
+            ( addId model " -s", Cmd.none )
 
-addId : Model -> Model
-addId model =
+
+addId : Model -> String -> Model
+addId model tag =
     let
         ( _, oldSeed ) =
             model.id
@@ -71,25 +75,22 @@ addId model =
     in
     { model
         | id = ( Just newId, newSeed )
-        , list = Uuid.toString newId :: model.list
+        , list = (Uuid.toString newId ++ tag) :: model.list
     }
 
 
 addIds : Int -> Model -> Model
 addIds n model =
-    List.foldl (\_ m -> addId m) model (List.range 1 n)
+    List.foldl (\_ m -> addId m "") model (List.range 1 n)
+
 
 
 -- generate : Int -> (a -> a) -> a -> a
 -- generate n fn m =
 --     if n <= 1 then
 --         fn m
-
 --     else
 --         generate (n - 1) f (fn m)
-
-
-
 ---- VIEW ----
 
 
@@ -133,6 +134,12 @@ main =
         }
 
 
+
+-- subscriptions : Model -> Sub Msg
+-- subscriptions _ =
+--     Time.every 5000 Tick
+
+
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Time.every 5000 Tick
+    Sub.batch [ Time.every 500 Tick, Time.every 10000 TickSlow ]
