@@ -96,7 +96,7 @@ view model =
     in
     div []
         [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working! Yes." ]
+        , h1 [] [ text "Your Elm App is working!! Yes." ]
         , button [ onClick AddUuid ] [ text "add uuid" ]
         , button [ onClick Clear ] [ text "clear" ]
         , button [ onClick (AddUuids n) ] [ text ("add " ++ String.fromInt n ++ " uuid") ]
