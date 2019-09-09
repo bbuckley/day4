@@ -38,6 +38,7 @@ type Msg
     | Clear
     | AddUuids Int
     | TickSlow Time.Posix
+    | TickSlower Time.Posix
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -62,6 +63,9 @@ update msg model =
         TickSlow _ ->
             ( addId model " -s", Cmd.none )
 
+        TickSlower _ ->
+            ( addFirstId model " -ss", Cmd.none )
+
 
 addId : Model -> String -> Model
 addId model tag =
@@ -78,10 +82,24 @@ addId model tag =
     }
 
 
+addFirstId : Model -> String -> Model
+addFirstId model tag =
+    let
+        ( _, oldSeed ) =
+            model.id
+
+        ( newId, newSeed ) =
+            Random.step Uuid.uuidGenerator oldSeed
+    in
+    { model
+        | id = ( Just newId, newSeed )
+        , list = [ Uuid.toString newId ++ tag ]
+    }
+
+
 addIds : Int -> Model -> Model
 addIds n model =
     List.foldl (\_ m -> addId m "") model (List.range 1 n)
-
 
 
 
@@ -142,4 +160,4 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    Sub.batch [ Time.every 500 Tick, Time.every 10000 TickSlow ]
+    Sub.batch [ Time.every 500 Tick, Time.every 10000 TickSlow, Time.every 30000 TickSlower ]
