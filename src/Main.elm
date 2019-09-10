@@ -1,6 +1,7 @@
 module Main exposing (Model, Msg(..), main, update, view)
 
 import Browser
+import Dict exposing (Dict, insert)
 import Html exposing (Html, button, div, h1, img, p, text)
 import Html.Attributes exposing (src)
 import Html.Events exposing (onClick)
@@ -15,14 +16,14 @@ import Uuid exposing (Uuid)
 
 type alias Model =
     { id : ( Maybe Uuid, Seed )
-    , list : List String
+    , dict : Dict String Int
     }
 
 
 init : Int -> ( Model, Cmd Msg )
 init seed =
-    ( { list = []
-      , id = ( Nothing, Random.initialSeed seed )
+    ( { id = ( Nothing, Random.initialSeed seed )
+      , dict = Dict.empty
       }
     , Cmd.none
     )
@@ -45,7 +46,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Clear ->
-            ( { model | list = [] }, Cmd.none )
+            ( { model | dict = Dict.empty }, Cmd.none )
 
         AddUuid ->
             ( addId model "", Cmd.none )
@@ -54,7 +55,7 @@ update msg model =
             ( addIds n model, Cmd.none )
 
         Tick _ ->
-            if List.length model.list < 3 then
+            if Dict.size model.dict < 3 then
                 ( addId model "", Cmd.none )
 
             else
@@ -78,7 +79,7 @@ addId model tag =
     in
     { model
         | id = ( Just newId, newSeed )
-        , list = (Uuid.toString newId ++ tag) :: model.list
+        , dict = Dict.insert (Uuid.toString newId ++ tag) 8 model.dict
     }
 
 
@@ -93,7 +94,7 @@ addFirstId model tag =
     in
     { model
         | id = ( Just newId, newSeed )
-        , list = [ Uuid.toString newId ++ tag ]
+        , dict = Dict.insert (Uuid.toString newId ++ tag) 8 model.dict
     }
 
 
@@ -114,7 +115,7 @@ addIds n model =
 
 showModel : Model -> Html Msg
 showModel model =
-    p [] [ div [] (List.map (\v -> div [] [ text v ]) model.list) ]
+    p [] [ div [] (List.map (\v -> div [] [ text v ]) (Dict.keys model.dict)) ]
 
 
 view : Model -> Html Msg
