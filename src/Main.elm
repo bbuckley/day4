@@ -154,13 +154,6 @@ addIds n model =
     List.foldl (\_ m -> addId m "") model (List.range 1 n)
 
 
-
--- generate : Int -> (a -> a) -> a -> a
--- generate n fn m =
---     if n <= 1 then
---         fn m
---     else
---         generate (n - 1) f (fn m)
 ---- VIEW ----
 
 
