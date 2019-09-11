@@ -14,9 +14,60 @@ import Uuid exposing (Uuid)
 ---- MODEL ----
 
 
+type Status
+    = A
+    | T
+    | Dis
+    | Dth
+
+
+statuses : List Status
+statuses =
+    [ A, T, Dis, Dth ]
+
+
+type CalcType
+    = Modeling
+    | Final
+    | UI1
+    | ModelingAB
+
+
+calcTypes : List CalcType
+calcTypes =
+    [ Modeling, Final, UI1, ModelingAB ]
+
+
+toString : CalcType -> String
+toString calcType =
+    case calcType of
+        Modeling ->
+            "Modeling"
+
+        Final ->
+            "Final"
+
+        UI1 ->
+            "UI1"
+
+        ModelingAB ->
+            "Modeling"
+
+
+type alias Tc =
+    { status : Maybe Status
+    , calcType : Maybe CalcType
+    }
+
+
+tc : Tc
+tc =
+    Tc Nothing Nothing
+
+
 type alias Model =
     { id : ( Maybe Uuid, Seed )
-    , dict : Dict String Int
+    , dict : Dict String Tc
     }
 
 
@@ -79,7 +130,7 @@ addId model tag =
     in
     { model
         | id = ( Just newId, newSeed )
-        , dict = Dict.insert (Uuid.toString newId ++ tag) 8 model.dict
+        , dict = Dict.insert (Uuid.toString newId ++ tag) tc model.dict
     }
 
 
@@ -94,7 +145,7 @@ addFirstId model tag =
     in
     { model
         | id = ( Just newId, newSeed )
-        , dict = Dict.insert (Uuid.toString newId ++ tag) 8 model.dict
+        , dict = Dict.insert (Uuid.toString newId ++ tag) (Tc Nothing Nothing) model.dict
     }
 
 
